@@ -14,9 +14,10 @@
 
 /* 팀 멤버 프로필 */
 .team_memb_box { padding: 50px 0; }
-.team_memb_box ul { display: flex; gap: 15px; }
-.team_memb_box ul li a { display: block; }
-.team_memb_box ul li img { display: block; width: 100%; }
+.team_memb_box > ul { display: flex; gap: 15px; }
+.team_memb_box > ul li { flex: 1; overflow: hidden; }
+.team_memb_box > ul li a { display: block; }
+.team_memb_box > ul li img { display: block; width: 100%; }
 
 /* 방명록 */
 .guest_book_wrap { padding-bottom: 80px; }
@@ -25,3 +26,31 @@
 .guest_book_box .input_comment_box button { flex-shrink: 0; width: 100px; font-family:'Gmarketsans'; font-weight: 400; font-size: 16px; color: #fff; background: #666; border: none; }
 .guest_book_box .comment_list_box ul li { margin-top: 5px; padding: 15px 20px; background: #f9f9f9; }
 .guest_book_box .comment_list_box ul li p { font-family:'Gmarketsans'; font-size: 15px; }
+
+/* 프로필 팝업 */
+.popup_wrap { display: none; position: fixed; top: 0; left: 0; align-items: center; justify-content: center; width: 100%; height: 100%; background: rgba(0,0,0,0.2);}
+.popup_wrap.active { display: flex; }
+.popup_wrap .popup_box { width: 300px; padding: 30px; background: #fff; border-radius: 15px; }
+.popup_wrap .popup_box .top { display: flex; justify-content: flex-end; margin-bottom: 10px; }
+.popup_wrap .popup_box .top .popupClose { position: relative; display: flex; justify-content: flex-end; width: 15px; height: 15px; font-size: 0; }
+.popup_wrap .popup_box .top .popupClose::before { content: ""; position: absolute; top: 0; left: 7px; width: 2px; height: 100%; transform: rotate(45deg); background: #222; }
+.popup_wrap .popup_box .top .popupClose::after { content: ""; position: absolute; top: 0; left: 7px; width: 2px; height: 100%; transform: rotate(-45deg); background: #222; }
+.popup_wrap .popup_box .img { width: 200px; margin: 0 auto; border-radius: 100%; overflow: hidden; }
+.popup_wrap .popup_box .img img { width: 100%; }
+.popup_wrap .popup_box .text { margin-top: 30px; }
+.popup_wrap .popup_box .text .name { display: block; font-family:'Gmarketsans'; font-weight: 700; font-size: 20px; text-align: center; }
+.popup_wrap .popup_box .text .infoList { display: flex; justify-content: center; flex-wrap: wrap; margin-top: 20px; }
+.popup_wrap .popup_box .text .infoList ul li { display: flex; margin-bottom: 15px; font-size: 15px; }
+.popup_wrap .popup_box .text .infoList ul li:last-child { margin-bottom: 0; }
+.popup_wrap .popup_box .text .infoList ul li strong { flex-shrink: 0; width: 80px; font-family:'Gmarketsans'; color: #999; }
+.popup_wrap .popup_box .text .infoList ul li em { font-family:'Gmarketsans'; color: #666; }
+.popup_wrap .popup_box .text .infoList ul li a { font-family:'Gmarketsans'; color: #666; }
+.popup_wrap .popup_box .text .infoList ul.editList { display: none; }
+.popup_wrap .popup_box .text .infoList ul.editList li { align-items: center; }
+.popup_wrap .popup_box .text .infoList ul.editList li input { height: 25px; font-family:'Pretendard'; border: 1px solid #e5e5e5; }
+.popup_wrap .popup_box .btn_box { display: flex; gap: 5px; margin-top: 30px; }
+.popup_wrap .popup_box .btn_box a { flex: 1; height: 46px; line-height: 48px; font-family:'Gmarketsans'; text-align: center; background: #e5e5e5; border-radius: 5px; }
+.popup_wrap .popup_box .btn_box a.editBtn { font-weight: 400; color: #fff; background: #2d62c2; }
+.popup_wrap .popup_box .btn_box a.editBtn.comp { display: none; }
+.popup_wrap .popup_box .btn_box a.popupClose { color: #666; }
+

@@ -35,12 +35,44 @@
 			</div>
 			<div class="team_memb_box wrap">
 				<ul>
-					<li><a href="sub.html"><img src="resource/img/profile.jpg"></a></li>
-					<li><a href="sub.html"><img src="resource/img/profile.jpg"></a></li>
-					<li><a href="sub.html"><img src="resource/img/profile.jpg"></a></li>
-					<li><a href="sub.html"><img src="resource/img/profile.jpg"></a></li>
-					<li><a href="sub.html"><img src="resource/img/profile.jpg"></a></li>
+					<li><a href="#none" id="tiyu"><img src="resource/img/tiyu.jpg"></a></li>
+					<li><a href="#none" id="ekyun"><img src="resource/img/ekyun.jpg"></a></li>
+					<li><a href="#none" id="jywon"><img src="resource/img/jywon.jpg"></a></li>
+					<li><a href="#none"><img src="resource/img/profile.jpg"></a></li>
+					<li><a href="#none"><img src="resource/img/profile.jpg"></a></li>
 				</ul>
+				<!-- 팝업 -->
+				<div class="popup_wrap">
+					<div class="popup_box">
+						<div class="top"><a href="#none" class="popupClose">팝업 닫기</a></div>
+						<div class="img"><img src="resource/img/profile.jpg" alt="" id="profileImage"></div>
+						<div class="text">
+							<strong class="name" id="name">유태이</strong>
+							<div class="infoList">
+								<ul class="textList">
+									<li><strong>생년월일</strong><em id="birth"></em></li>
+									<li><strong>MBTI</strong><em id="mbti"></em></li>
+									<li><strong>소개</strong><em id="comment"></em></li>
+									<li><strong>Github</strong><a href="#none" id="github"></a></li>
+									<li><strong>Blog</strong><a href="#none" id="blog"></a></li>
+								</ul>
+								<ul class="editList">
+									<li><strong>생년월일</strong><input type="text" name="inputBirth" id="inputBirth"></li>
+									<li><strong>MBTI</strong><input type="text" name="inputMbti" id="inputMbti"></li>
+									<li><strong>소개</strong><input type="text" name="inputComment" id="inputComment"></li>
+									<li><strong>Github</strong><input type="text" name="inputGithub" id="inputGithub"></li>
+									<li><strong>Blog</strong><input type="text" name="inputBlog" id="inputBlog"></li>
+								</ul>
+							</div>
+						</div>
+						<div class="btn_box">
+							<a href="#none" class="editBtn" id="editBtn">수정하기</a>
+							<a href="#none" class="editBtn comp" id="editCompBtn">수정완료</a>
+							<a href="#none" class="popupClose">닫기</a>
+						</div>
+					</div>
+				</div>
+				<!-- //팝업 -->
 			</div>
 			<div class="guest_book_wrap">
 				<div class="guest_book_box wrap">
@@ -58,7 +90,7 @@
 			// Firebase SDK 라이브러리 가져오기
 			import { initializeApp } from "https://www.gstatic.com/firebasejs/9.22.0/firebase-app.js";
 			import { getFirestore } from "https://www.gstatic.com/firebasejs/9.22.0/firebase-firestore.js";
-			import { collection, addDoc } from "https://www.gstatic.com/firebasejs/9.22.0/firebase-firestore.js";
+			import { doc, getDoc, collection, addDoc, deleteDoc, updateDoc } from "https://www.gstatic.com/firebasejs/9.22.0/firebase-firestore.js";
 			import { getDocs } from "https://www.gstatic.com/firebasejs/9.22.0/firebase-firestore.js";
 
 			// Firebase 구성 정보 설정
@@ -99,6 +131,7 @@
 
 			//방명록 댓글 생성
 			$('#commentList').empty(); //empty는 비워주기
+			//const queryComment = await db.collection('guestComment').get();
 			const queryComment = await getDocs(collection(db, 'guestComment'));
 
 			queryComment.forEach((doc) => {
@@ -107,7 +140,10 @@
                 
                 let commentTrim = comment.trim(); //문자열 앞뒤의 공백을 모두 제거
 
-				let tempHtml = `<li id="${docId}"><p>${comment}</p></li>`
+				let tempHtml = `<li id="${docId}">
+									<p class="comment">${comment}</p>
+									<button class="delBtn">삭제</button>
+								</li>`
 
                 if (commentTrim = null || commentTrim == '') {
                     //공백만 있을 때
@@ -116,6 +152,145 @@
                     $('#commentList').append(tempHtml);
                 }
 			});
+
+			//페이지 로드 시 모든 삭제 버튼에 이벤트 리스너 추가
+			$('.delBtn').each(function(){
+				addDelete($(this));
+			});
+
+			//삭제 버튼 이벤트 리스너
+			function addDelete(node) {
+				//삭제 버튼에 클릭 이벤트 리스너 등록
+				node.off().on('click', async function(e){
+					//if(window.confirm('삭제하시겠습니까?')) return;
+
+					//삭제 확인 여부
+					const confirmed = window.confirm('삭제하시겠습니까?');
+
+					//확인이 아닌 경우, 함수를 종료 .. ! 느낌표 꼭 붙여줘야 함
+					if(!confirmed) return;
+
+					const commentEl = e.currentTarget.closest('li');
+					const docId = commentEl.id; //li 요소의 삭제할 문서의 id를 가져옴
+
+					//Firestore에서 댓글 문서 삭제
+					try {
+						await deleteDoc(doc(db, 'guestComment', docId));
+						alert('삭제 완료');
+						commentEl.remove();
+					} catch (error) {
+						console.error('Error removing document: ', error);
+						alert('댓글 삭제에 실패했습니다.')
+					}
+				});
+			}
+
+			// 전역 변수 선언
+			let dbIdName = "";
+			
+			//프로필 팝업 열기
+			$('.team_memb_box > ul li a').click(async function (){
+				//버튼 아이디 값
+				dbIdName = $(this).attr('id');
+				console.log('dbIdName:', dbIdName); // 디버깅용 콘솔 출력
+
+				//팝업 열기
+				$('.popup_wrap').addClass ('active');
+
+				//프로필 이미지 파일명 변경
+				const profileImage = document.getElementById('profileImage');
+				profileImage.src = `resource/img/${dbIdName}.jpg`;
+
+				const info = await getDoc(doc(db, 'memInfo', dbIdName));
+				const row = info.data();
+
+				const name = document.getElementById('name');
+				const birth = document.getElementById('birth');
+				const mbti = document.getElementById('mbti');
+				const comment = document.getElementById('comment');
+				const githubUrl = document.getElementById('github');
+				const blog = document.getElementById('blog');
+
+				name.innerHTML = `${row.name}`;
+				birth.innerHTML = `${row.birth}`;
+				mbti.innerHTML = `${row.mbti}`;
+				comment.innerHTML = `${row.comment}`;
+				githubUrl.innerHTML = `${row.githubUrl}`;
+				blog.innerHTML = `${row.blog}`;
+
+				//input value에 데이터 추가
+				$('#inputBirth').val(birth.textContent);
+				$('#inputMbti').val(mbti.textContent);
+				$('#inputComment').val(comment.textContent);
+				$('#inputGithub').val(github.textContent);
+			});
+
+			//프로필 수정하기 버튼 클릭 시
+			$('#editBtn').click(async function(){
+				$('.infoList .textList').hide();
+				$('.infoList .editList').show();
+
+				$('.btn_box a.editBtn').hide();
+				$('.btn_box a.comp').show();
+			});
+
+			//수정 완료 버튼 클릭 시
+			$('#editCompBtn').click(async function(){
+				const updatedData = {
+					birth: $('#inputBirth').val(),
+					mbti: $('#inputMbti').val(),
+					comment: $('#inputComment').val(),
+					githubUrl: $('#inputGithub').val(),
+					blog: $('#inputBlog').val()
+				}
+
+				const docRef = doc(db, 'memInfo', dbIdName);
+				console.log('docRef:', docRef.path); // 디버깅용 콘솔 출력
+
+				await updateDoc(docRef, updatedData);
+
+				//업데이트가 완료되면 화면에도 반영할 수 있도록 다시 읽어오기
+				const updatedInfo = await getDoc(docRef);
+				const updatedRow = updatedInfo.data();
+
+				const birth = document.getElementById('birth');
+				const mbti = document.getElementById('mbti');
+				const comment = document.getElementById('comment');
+				const githubUrl = document.getElementById('github');
+				const blog = document.getElementById('blog');
+
+				birth.innerHTML = `${updatedRow.birth}`;
+				mbti.innerHTML = `${updatedRow.mbti}`;
+				comment.innerHTML = `${updatedRow.comment}`;
+				githubUrl.innerHTML = `${updatedRow.githubUrl}`;
+				blog.innerHTML = `${updatedRow.blog}`;
+				
+
+				$('.infoList .textList').show();
+				$('.infoList .editList').hide();
+
+				$('.btn_box a.editBtn').show();
+				$('.btn_box a.comp').hide();
+			});
+
+			//프로필 팝업 닫기
+			$('.popupClose').click(function (){
+				$('.popup_wrap').removeClass('active');
+			});
+
+
+			
+			
+
+
+
+
+
+
+
+
+
+
 
 		</script>
 	</body>

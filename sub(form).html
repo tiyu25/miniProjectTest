@@ -13,6 +13,9 @@
 		<!-- //css -->
 
 		<!-- script -->
+		<script src="https://ajax.googleapis.com/ajax/libs/jquery/3.5.1/jquery.min.js"></script>
+        <script src="https://www.gstatic.com/firebasejs/8.6.8/firebase-app.js"></script>
+        <script src="https://www.gstatic.com/firebasejs/8.6.8/firebase-database.js"></script>
 		<!-- //script -->
 	</head>
 	<body style="background: #f9f9f9;">
@@ -23,19 +26,43 @@
 					<div class="text">
 						<ul>
 							<li class="name"><strong>유태이</strong></li>
-							<li><strong>생년월일</strong><em>1999.02.05</em></li>
-							<li><strong>MBTI</strong><em>ISTP</em></li>
-							<li><strong>소개</strong><em>안녕하시렵니까?</em></li>
-							<li><strong>목표</strong><em>안녕하시렵니까?</em></li>
-							<li><strong>Github</strong><em>안녕하시렵니까?</em></li>
-							<li><strong>Blog</strong><em>안녕하시렵니까?</em></li>
+							<li>
+								<strong>생년월일</strong>
+								<p id="birth"></p>
+							</li>
 						</ul>
 					</div>
 				</div>
 				<div class="btn_box">
-					<a href="#none" class="btn_bace1">수정하기</a>
+					<a href="#none" class="btn_bace1" id="editBtn">수정하기</a>
 				</div>
 			</div>
 		</div>
+		<script type="module">
+			// Firebase SDK 라이브러리 가져오기
+			import { initializeApp } from "https://www.gstatic.com/firebasejs/9.22.0/firebase-app.js";
+			import { getFirestore } from "https://www.gstatic.com/firebasejs/9.22.0/firebase-firestore.js";
+			import { doc, collection, addDoc, updateDoc } from "https://www.gstatic.com/firebasejs/9.22.0/firebase-firestore.js";
+			import { getDocs } from "https://www.gstatic.com/firebasejs/9.22.0/firebase-firestore.js";
+
+			// Firebase 구성 정보 설정
+			const firebaseConfig = {
+				apiKey: "AIzaSyAzRZRrFoHhcGrmR78yNNRN2AXwLLm0CnU",
+				authDomain: "sparta-f1798.firebaseapp.com",
+				projectId: "sparta-f1798",
+				storageBucket: "sparta-f1798.appspot.com",
+				messagingSenderId: "340506378648",
+				appId: "1:340506378648:web:0eddeef3ff3c5d9e5eabed",
+				measurementId: "G-JLXDX6XFJC"
+			};
+
+			// Firebase 인스턴스 초기화
+			const app = initializeApp(firebaseConfig);
+			const db = getFirestore(app);
+
+			
+
+
+		</script>
 	</body>
 </html>
