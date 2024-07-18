@@ -111,9 +111,9 @@
 
 			//방명록 데이터 등록
 			$('#commentBtn').click(async function(){
-				let comment = $('#comment').val();
-                let commentTrim = comment.trim(); //문자열 앞뒤의 공백을 모두 제거
-                if (commentTrim = null || commentTrim == ''){
+				let comment = $('textarea#comment').val();
+				let commentTrim = comment.trim(); //문자열 앞뒤 공백을 모두 제거
+                if ( commentTrim === ''){
                     //공백만 있을 때
                     alert('텍스트를 입력해주세요.');
                 } else {
